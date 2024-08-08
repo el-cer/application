@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload CSV</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div id="nav_bar_home">
+        <h1 id="home_page_main">BrainML</h1>
+        <ul>
+            <li><a href="{% url 'model_list' %}">Models</a></li>
+            <li><a href="{% url 'model_list' %}">ABCDERE</a></li>
+        </ul>
+    </div>
+
+    <div class="main">
+        <div id="board">
+            <p>user:</p>
+        </div>
+
+        <div class="content">
+            <!-- Domain Selection Form -->
+            <div class="box_work">
+                <form method="post" enctype="multipart/form-data" action="{% url 'upload_csv' %}">
+                    {% csrf_token %}
+                    {{ domain_form.as_p }}
+                    <button type="submit" name="Ml_domain">Choose</button>
+                </form>
+            </div>
+
+            <!-- Conditional content based on selected domain -->
+            {% if domain %}
+                <div class="box_work">
+                    <form method="post" enctype="multipart/form-data" action="{% url 'upload_csv' %}">
+                        {% csrf_token %}
+                        {{ model_form.as_p }}
+                        <button type="submit" name="model_domain">Choose</button>
+                    </form>
+                </div>
+            {% endif %}
+
+            <!-- CSV Upload Form -->
+            <div class="box_work">
+                <form method="post" enctype="multipart/form-data" action="{% url 'upload_csv' %}">
+                    {% csrf_token %}
+                    {{ upload_form.as_p }}
+                    <button type="submit" name="upload_csv">Upload</button>
+                </form>
+                {% if upload_form.errors %}
+                    <div class="errors">
+                        {{ upload_form.errors }}
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Column Selection Form -->
+            {% if columns %}
+                <div class="box_work">
+                    <h2>Select Column</h2>
+                    <form method="post" action="{% url 'upload_csv' %}">
+                        {% csrf_token %}
+                        {{ selection_form.as_p }}
+                        <button type="submit" name="select_column">Target</button>
+                    </form>
+                    {% if selection_form.errors %}
+                        <div class="errors">
+                            {{ selection_form.errors }}
+                        </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+
+            <!-- Score Display -->
+            {% if score %}
+                <div class="SCORE">
+                    <h2>SCORE</h2>
+                    <p>{{ score }}</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>
